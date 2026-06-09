@@ -94,6 +94,20 @@ elif page == "Data Viz":
         ax.legend(title="Outcome")
         st.pyplot(fig)          # <- was plt.show()
 
+        st.subheader("Correlation Heatmap")
+
+    fig, ax = plt.subplots(figsize=(9, 7))
+    sns.heatmap(
+        df.corr(numeric_only=True),
+        annot=True,
+        fmt=".2f",        
+        cmap="coolwarm",  
+        ax=ax
+    )
+    ax.set_title("Correlation Between Numeric Variables")
+    st.pyplot(fig)
+
+
     # -----------------------------
     # 1. Exam score distribution
     # -----------------------------
@@ -151,10 +165,34 @@ elif page == "Data Viz":
     ax.set_title("Feature Importance for Predicting Exam Score")
     st.pyplot(fig)              # <- was plt.show()
 
-    # -----------------------------
-    # 5. Data preview
-    # -----------------------------
-    st.dataframe(df.head(50))   # <- was df.head(50)
+
+   
+    st.subheader("Most Common Weak Spots Among Failing Students")
+    st.caption("Among students who failed, how often each factor falls below a healthy threshold. "
+               "Students can have more than one weak spot, so bars don't sum to 100%.")
+
+    failed = df[df["pass_fail"] == "Failed"].copy()
+
+    # Thresholds: below these counts as a 'weak spot' (higher internet = worse)
+    deficiencies = {
+        "Low study hours":        failed["study_hours"] < 5,
+        "Low attendance":         failed["attendance"] < 70,
+        "Few assignments done":   failed["assignments_completed"] < 8,
+        "Low previous score":     failed["previous_score"] < 60,
+        "Short sleep":            failed["sleep_hours"] < 6,
+        "High internet usage":    failed["internet_usage"] > 6,
+    }
+
+    counts = {k: v.sum() for k, v in deficiencies.items()}
+    defi_df = (pd.DataFrame({"Weak Spot": counts.keys(), "Students": counts.values()})
+               .sort_values("Students", ascending=True))
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.barh(defi_df["Weak Spot"], defi_df["Students"])
+    ax.set_xlabel("Number of Failing Students")
+    ax.set_title("Common Weak Spots Among Failing Students")
+    st.pyplot(fig)
+
 
 elif page == "Prediction":
     st.subheader("Data Preview")
