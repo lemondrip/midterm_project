@@ -96,7 +96,7 @@ elif page == "Data Viz":
         ax.legend(title="Outcome")
         st.pyplot(fig)          # <- was plt.show()
 
-        st.subheader("Correlation Heatmap")
+    st.subheader("Correlation Heatmap")
 
     fig, ax = plt.subplots(figsize=(9, 7))
     sns.heatmap(
@@ -197,24 +197,20 @@ elif page == "Data Viz":
 
 
 elif page == "Prediction":
-    st.subheader("Data Preview")
+    st.subheader("Exam Score Prediction Model")
+    st.text("A Linear Regression model trained to predict exam score from student habits.")
 
-    # ---------------- Load ----------------
-
+    # ---------------- Setup ----------------
     TARGET = "exam_score"      # variable to predict
     TRAIN_SIZE = 0.70          # fraction used for training
     SEED = 42
 
     num_df = df.drop(columns=["placement_status"])   # numeric features only
-
     features = [c for c in num_df.columns if c != TARGET]
     x = num_df[features]
     y = df[TARGET]
 
-    print("=" * 60)
-    print(f"STUDENT REGRESSION  |  predicting: {TARGET}")
-    print("=" * 60)
-    print(f"Rows: {len(df)}   Features: {features}\n")
+    st.markdown(f"**Rows:** {len(df)}  |  **Features:** {', '.join(features)}")
 
     # ---------------- Fit ----------------
     X_train, X_test, y_train, y_test = train_test_split(
@@ -224,29 +220,33 @@ elif page == "Prediction":
     pred = lm.predict(X_test)
 
     # ---------------- Results ----------------
-    print("RESULTS")
-    print(f"  Explained variance : {mt.explained_variance_score(y_test, pred) * 100:6.2f} %")
-    print(f"  MAE                : {mt.mean_absolute_error(y_test, pred):6.2f}")
-    print(f"  MSE                : {mt.mean_squared_error(y_test, pred):6.2f}")
-    print(f"  R-Square           : {mt.r2_score(y_test, pred):6.3f}")
+    st.subheader("Model Performance")
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Explained Variance", f"{mt.explained_variance_score(y_test, pred) * 100:.1f}%")
+    c2.metric("MAE", f"{mt.mean_absolute_error(y_test, pred):.2f}")
+    c3.metric("MSE", f"{mt.mean_squared_error(y_test, pred):.2f}")
+    c4.metric("R-Square", f"{mt.r2_score(y_test, pred):.3f}")
 
     # ---------------- Raw coefficients ----------------
+    st.subheader("Raw Coefficients")
+    st.caption(f"Effect of a +1 unit change in each feature on {TARGET}.")
     coef = pd.DataFrame({"feature": features, "coef": lm.coef_})
     coef = coef.reindex(coef.coef.abs().sort_values(ascending=False).index)
-    print("\nRAW COEFFICIENTS (effect of +1 unit on " + TARGET + ")")
-    for _, r in coef.iterrows():
-        print(f"  {r.feature:24s} {r.coef:+8.3f}")
-    print(f"  {'intercept':24s} {lm.intercept_:+8.3f}")
+    st.dataframe(coef.reset_index(drop=True))
+    st.markdown(f"**Intercept:** `{lm.intercept_:.3f}`")
 
-    # ---------------- Standardized betas (comparable scale) ----------------
+    # ---------------- Standardized betas ----------------
+    st.subheader("Standardized Betas (Ranked Levers)")
+    st.caption("Features rescaled to the same units so their influence is directly comparable.")
     xz = (x - x.mean()) / x.std()
     yz = (y - y.mean()) / y.std()
     lmz = LinearRegression().fit(xz, yz)
     beta = pd.DataFrame({"feature": features, "std_beta": lmz.coef_})
-    beta = beta.reindex(beta.std_beta.abs().sort_values(ascending=False).index)
-    print("\nSTANDARDIZED BETAS (ranked levers, apples-to-apples)")
-    for _, r in beta.iterrows():
-        bar = "#" * int(abs(r.std_beta) * 40)
-        print(f"  {r.feature:24s} {r.std_beta:+6.3f}  {bar}")
+    beta = beta.reindex(beta.std_beta.abs().sort_values(ascending=True).index)
 
-    print("\n" + "=" * 60)
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.barh(beta["feature"], beta["std_beta"])
+    ax.axvline(0, linewidth=1)
+    ax.set_xlabel("Standardized Coefficient")
+    ax.set_title("Ranked Influence on Exam Score")
+    st.pyplot(fig)
