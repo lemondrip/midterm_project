@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn import metrics as mt
+
 
 st.sidebar.title("Student Performance Insights Dashboard")
 st.sidebar.text("Presented by: Abhimanyu, Eric, Jessie, and Joe")
@@ -196,3 +198,55 @@ elif page == "Data Viz":
 
 elif page == "Prediction":
     st.subheader("Data Preview")
+
+    # ---------------- Load ----------------
+
+    TARGET = "exam_score"      # variable to predict
+    TRAIN_SIZE = 0.70          # fraction used for training
+    SEED = 42
+
+    num_df = df.drop(columns=["placement_status"])   # numeric features only
+
+    features = [c for c in num_df.columns if c != TARGET]
+    x = num_df[features]
+    y = df[TARGET]
+
+    print("=" * 60)
+    print(f"STUDENT REGRESSION  |  predicting: {TARGET}")
+    print("=" * 60)
+    print(f"Rows: {len(df)}   Features: {features}\n")
+
+    # ---------------- Fit ----------------
+    X_train, X_test, y_train, y_test = train_test_split(
+        x, y, test_size=1 - TRAIN_SIZE, random_state=SEED
+    )
+    lm = LinearRegression().fit(X_train, y_train)
+    pred = lm.predict(X_test)
+
+    # ---------------- Results ----------------
+    print("RESULTS")
+    print(f"  Explained variance : {mt.explained_variance_score(y_test, pred) * 100:6.2f} %")
+    print(f"  MAE                : {mt.mean_absolute_error(y_test, pred):6.2f}")
+    print(f"  MSE                : {mt.mean_squared_error(y_test, pred):6.2f}")
+    print(f"  R-Square           : {mt.r2_score(y_test, pred):6.3f}")
+
+    # ---------------- Raw coefficients ----------------
+    coef = pd.DataFrame({"feature": features, "coef": lm.coef_})
+    coef = coef.reindex(coef.coef.abs().sort_values(ascending=False).index)
+    print("\nRAW COEFFICIENTS (effect of +1 unit on " + TARGET + ")")
+    for _, r in coef.iterrows():
+        print(f"  {r.feature:24s} {r.coef:+8.3f}")
+    print(f"  {'intercept':24s} {lm.intercept_:+8.3f}")
+
+    # ---------------- Standardized betas (comparable scale) ----------------
+    xz = (x - x.mean()) / x.std()
+    yz = (y - y.mean()) / y.std()
+    lmz = LinearRegression().fit(xz, yz)
+    beta = pd.DataFrame({"feature": features, "std_beta": lmz.coef_})
+    beta = beta.reindex(beta.std_beta.abs().sort_values(ascending=False).index)
+    print("\nSTANDARDIZED BETAS (ranked levers, apples-to-apples)")
+    for _, r in beta.iterrows():
+        bar = "#" * int(abs(r.std_beta) * 40)
+        print(f"  {r.feature:24s} {r.std_beta:+6.3f}  {bar}")
+
+    print("\n" + "=" * 60)
