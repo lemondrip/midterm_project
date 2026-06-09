@@ -12,7 +12,7 @@ df = pd.read_csv("student_dataset.csv")
 
 #Design
 st.title("Student Performance Insights Dashboard")
-st.text("Presented by: Abimanyu, Eric, Jessie, and Joe")
+st.text("Presented by: Abhimanyu, Eric, Jessie, and Joe")
 st.text("Predicting how students will place on exams is a difficult issue as there are multiple factors that can contribute to passing vs. failing. In order to best assist a student, it is important to understand what they are currently doing and what adjustments will allow for the most impactful results")
 
 st.subheader("Data Preview")
