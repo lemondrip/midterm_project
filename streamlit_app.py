@@ -249,38 +249,35 @@ elif page == "Prediction":
     ax.set_title("Ranked Influence on Exam Score")
     st.pyplot(fig)
 
+ 
     # ==========================================================
-    # Interactive predictor — builds on the lm model trained above
+    # Interactive predictor — full input, builds on the lm model above
     # ==========================================================
     st.subheader("Try It: Predict Placement")
-    st.caption("Pick one factor and enter a value. The model predicts the exam score and "
-               "whether the student places. All other factors are held at their average.")
+    st.caption("Enter the student's details. The model predicts their exam score "
+               "and whether they place.")
 
-    # friendly label  ->  actual column name
-    label_to_col = {
-        "Study Hours": "study_hours",
-        "Attendance (%)": "attendance",
-        "Sleep Hours": "sleep_hours",
-        "Internet Usage": "internet_usage",
-        "Assignments Completed": "assignments_completed",
-        "Previous Score": "previous_score",
+    # friendly labels for the existing feature columns
+    labels = {
+        "study_hours": "Study Hours",
+        "attendance": "Attendance (%)",
+        "sleep_hours": "Sleep Hours",
+        "internet_usage": "Internet Usage (hrs)",
+        "assignments_completed": "Assignments Completed",
+        "previous_score": "Previous Score",
     }
 
-    choice = st.selectbox("Choose a factor", list(label_to_col.keys()))
-    col = label_to_col[choice]
-
-    value = st.number_input(
-        f"Enter a value for {choice}",
-        value=float(round(x[col].mean(), 1))
-    )
+    inputs = {}
+    cols = st.columns(3)
+    for i, feat in enumerate(features):                 # reuse 'features' from above
+        inputs[feat] = cols[i % 3].number_input(
+            labels.get(feat, feat),
+            value=float(round(x[feat].mean(), 1))       # reuse 'x' from above
+        )
 
     if st.button("Predict Placement"):
-        # start every feature at its average, then override the chosen one
-        row = x.mean().to_frame().T      # 1-row DataFrame of feature means
-        row[col] = value
-        row = row[features]              # match the column order the model expects
-
-        predicted_score = float(lm.predict(row)[0])
+        row = pd.DataFrame([inputs])[features]          # match the model's column order
+        predicted_score = float(lm.predict(row)[0])     # reuse 'lm' from above
         placed = predicted_score >= 70
 
         st.metric("Predicted Exam Score", f"{predicted_score:.1f}")
