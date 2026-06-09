@@ -96,8 +96,6 @@ elif page == "Data Viz":
         ax.legend(title="Outcome")
         st.pyplot(fig)          # <- was plt.show()
 
-    st.subheader("Correlation Heatmap")
-
     fig, ax = plt.subplots(figsize=(9, 7))
     sns.heatmap(
         df.corr(numeric_only=True),
@@ -250,3 +248,43 @@ elif page == "Prediction":
     ax.set_xlabel("Standardized Coefficient")
     ax.set_title("Ranked Influence on Exam Score")
     st.pyplot(fig)
+
+    # ==========================================================
+    # Interactive predictor — builds on the lm model trained above
+    # ==========================================================
+    st.subheader("Try It: Predict Placement")
+    st.caption("Pick one factor and enter a value. The model predicts the exam score and "
+               "whether the student places. All other factors are held at their average.")
+
+    # friendly label  ->  actual column name
+    label_to_col = {
+        "Study Hours": "study_hours",
+        "Attendance (%)": "attendance",
+        "Sleep Hours": "sleep_hours",
+        "Internet Usage": "internet_usage",
+        "Assignments Completed": "assignments_completed",
+        "Previous Score": "previous_score",
+    }
+
+    choice = st.selectbox("Choose a factor", list(label_to_col.keys()))
+    col = label_to_col[choice]
+
+    value = st.number_input(
+        f"Enter a value for {choice}",
+        value=float(round(x[col].mean(), 1))
+    )
+
+    if st.button("Predict Placement"):
+        # start every feature at its average, then override the chosen one
+        row = x.mean().to_frame().T      # 1-row DataFrame of feature means
+        row[col] = value
+        row = row[features]              # match the column order the model expects
+
+        predicted_score = float(lm.predict(row)[0])
+        placed = predicted_score >= 70
+
+        st.metric("Predicted Exam Score", f"{predicted_score:.1f}")
+        if placed:
+            st.success("Result: **Placed**  (predicted score is 70 or above)")
+        else:
+            st.error("Result: **Not Placed**  (predicted score is below 70)")
