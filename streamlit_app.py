@@ -92,7 +92,7 @@ elif page == "Data Viz":
         ax.set_ylabel("Exam Score")
         ax.set_title(title)
         ax.legend(title="Outcome")
-        plt.show()
+        st.pyplot(fig)          # <- was plt.show()
 
     # -----------------------------
     # 1. Exam score distribution
@@ -104,7 +104,7 @@ elif page == "Data Viz":
     ax.set_xlabel("Exam Score")
     ax.set_ylabel("Number of Students")
     ax.set_title("Distribution of Exam Scores")
-    plt.show()
+    st.pyplot(fig)              # <- was plt.show()
 
     # -----------------------------
     # 2. Behavioral factors vs exam score
@@ -118,9 +118,9 @@ elif page == "Data Viz":
     # 3. Academic preparation factors
     # -----------------------------
     scatter_chart(df, "assignments_completed", "Assignments Completed",
-                "Assignments Completed vs Exam Score")
+                  "Assignments Completed vs Exam Score")
     scatter_chart(df, "previous_score", "Previous Score",
-                "Previous Score vs Exam Score")
+                  "Previous Score vs Exam Score")
 
     # -----------------------------
     # 4. Feature importance (Linear Regression)
@@ -149,17 +149,12 @@ elif page == "Data Viz":
     ax.set_xlabel("Regression Coefficient")
     ax.set_ylabel("Feature")
     ax.set_title("Feature Importance for Predicting Exam Score")
-    plt.show()
+    st.pyplot(fig)              # <- was plt.show()
 
     # -----------------------------
     # 5. Data preview
     # -----------------------------
-    df.head(50)
-
-
-
-
-
+    st.dataframe(df.head(50))   # <- was df.head(50)
 
 elif page == "Prediction":
     st.subheader("Data Preview")
