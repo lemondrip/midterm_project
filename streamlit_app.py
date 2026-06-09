@@ -69,7 +69,92 @@ if page == "Introduction":
 elif page == "Data Viz":
     st.subheader("Data Viz")
 
+    df["pass_fail"] = df["placement_status"].map({
+        "Placed": "Passed",
+        "Not Placed": "Failed"
+    })
 
+    # -----------------------------
+    # Helpers
+    # -----------------------------
+    def add_pass_line(ax):
+        ax.axhline(70, linestyle="--", linewidth=1.5)
+
+    def scatter_chart(df, x_col, x_label, title):
+        """Scatterplot of a behavior vs exam score, colored by pass/fail."""
+        fig, ax = plt.subplots(figsize=(9, 5))
+        sns.scatterplot(
+            data=df, x=x_col, y="exam_score",
+            hue="pass_fail", alpha=0.65, ax=ax
+        )
+        add_pass_line(ax)
+        ax.set_xlabel(x_label)
+        ax.set_ylabel("Exam Score")
+        ax.set_title(title)
+        ax.legend(title="Outcome")
+        plt.show()
+
+    # -----------------------------
+    # 1. Exam score distribution
+    # -----------------------------
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.histplot(data=df, x="exam_score", bins=25, kde=True, ax=ax)
+    ax.axvline(70, linestyle="--", linewidth=1.5)
+    ax.text(71, ax.get_ylim()[1] * 0.9, "Passing score: 70", fontsize=10)
+    ax.set_xlabel("Exam Score")
+    ax.set_ylabel("Number of Students")
+    ax.set_title("Distribution of Exam Scores")
+    plt.show()
+
+    # -----------------------------
+    # 2. Behavioral factors vs exam score
+    # -----------------------------
+    scatter_chart(df, "study_hours",    "Study Hours",    "Study Hours vs Exam Score")
+    scatter_chart(df, "attendance",     "Attendance (%)", "Attendance vs Exam Score")
+    scatter_chart(df, "sleep_hours",    "Sleep Hours",    "Sleep Hours vs Exam Score")
+    scatter_chart(df, "internet_usage", "Internet Usage", "Internet Usage vs Exam Score")
+
+    # -----------------------------
+    # 3. Academic preparation factors
+    # -----------------------------
+    scatter_chart(df, "assignments_completed", "Assignments Completed",
+                "Assignments Completed vs Exam Score")
+    scatter_chart(df, "previous_score", "Previous Score",
+                "Previous Score vs Exam Score")
+
+    # -----------------------------
+    # 4. Feature importance (Linear Regression)
+    # -----------------------------
+    feature_cols = [
+        "study_hours", "attendance", "sleep_hours",
+        "internet_usage", "assignments_completed", "previous_score"
+    ]
+
+    X = df[feature_cols]
+    y = df["exam_score"]
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    coef_df = pd.DataFrame({
+        "Feature": feature_cols,
+        "Coefficient": model.coef_
+    })
+    coef_df["Absolute Impact"] = coef_df["Coefficient"].abs()
+    coef_df = coef_df.sort_values("Absolute Impact", ascending=True)
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.barh(coef_df["Feature"], coef_df["Coefficient"])
+    ax.axvline(0, linewidth=1)
+    ax.set_xlabel("Regression Coefficient")
+    ax.set_ylabel("Feature")
+    ax.set_title("Feature Importance for Predicting Exam Score")
+    plt.show()
+
+    # -----------------------------
+    # 5. Data preview
+    # -----------------------------
+    df.head(50)
 
 
 
