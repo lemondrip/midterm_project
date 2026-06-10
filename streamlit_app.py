@@ -186,34 +186,8 @@ elif page == "Data Viz":
                   "Previous Score vs Exam Score")
 
     # -----------------------------
-    # 4. Feature importance (Linear Regression)
+    # 4. Common Weak Spots
     # -----------------------------
-    feature_cols = [
-        "study_hours", "attendance", "sleep_hours",
-        "internet_usage", "assignments_completed", "previous_score"
-    ]
-
-    X = df[feature_cols]
-    y = df["exam_score"]
-
-    model = LinearRegression()
-    model.fit(X, y)
-
-    coef_df = pd.DataFrame({
-        "Feature": feature_cols,
-        "Coefficient": model.coef_
-    })
-    coef_df["Absolute Impact"] = coef_df["Coefficient"].abs()
-    coef_df = coef_df.sort_values("Absolute Impact", ascending=True)
-
-    fig, ax = plt.subplots(figsize=(9, 5))
-    ax.barh(coef_df["Feature"], coef_df["Coefficient"])
-    ax.axvline(0, linewidth=1)
-    ax.set_xlabel("Regression Coefficient")
-    ax.set_ylabel("Feature")
-    ax.set_title("Feature Importance for Predicting Exam Score")
-    st.pyplot(fig)              # <- was plt.show()
-
 
    
     st.subheader("Most Common Weak Spots Among Failing Students")
