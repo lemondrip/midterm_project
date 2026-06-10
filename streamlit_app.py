@@ -34,7 +34,7 @@ if page == "Introduction":
         ("Internet Usage", "Daily hours spent on the internet, which may reflect both research and distraction time"),
         ("Assignments Completed", "Number of assignments submitted; a proxy for student engagement and work ethic"),
         ("Previous Score", "Score from the student's most recent prior exam, capturing historical academic baseline"),
-        ("Placement Status", "Whether the student was placed after graduation — Placed or Not Placed"),
+        ("Placement Status", "Whether the student has passed or failed — 70 is pass mark"),
         ("Exam Score", "The final exam score (0-100); the variable our model aims to predict"),
     ]
 
