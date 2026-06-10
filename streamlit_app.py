@@ -123,6 +123,10 @@ elif page == "Data Viz":
     pass_rate = (df["pass_fail"] == "Passed").mean() * 100
     avg_study = df["study_hours"].mean()
     avg_attendance = df["attendance"].mean()
+    avg_sleep = df["sleep_hours"].mean()
+    avg_internet = df["internet_usage"].mean()
+    avg_assignment = df["assignments_completed"].mean()
+    avg_prevscore = df["previous_score"].mean()
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -130,7 +134,10 @@ elif page == "Data Viz":
     col2.metric("Average Exam Score", f"{avg_score:.1f}")
     col3.metric("Pass Rate", f"{pass_rate:.1f}%")
     col4.metric("Average Attendance", f"{avg_attendance:.1f}%")
-
+    col5.metric("Average Sleep Hours", f"{avg_sleep:.1f}%")
+    col6.metric("Average Internet Usage", f"{avg_internet:.1f}%")
+    col7.metric("Average Assignments Completed", f"{avg_assignment:.1f}%")
+    col8.metric("Average Previous Score", f"{avg_prevscore:.1f}%")
     st.write("")
 
 
