@@ -170,6 +170,7 @@ elif page == "Data Viz":
         """
         Analysis between different student behaviors and the exam score.
         """
+    )    
     scatter_chart(df, "study_hours",    "Study Hours",    "Study Hours vs Exam Score")
     scatter_chart(df, "attendance",     "Attendance (%)", "Attendance vs Exam Score")
     scatter_chart(df, "sleep_hours",    "Sleep Hours",    "Sleep Hours vs Exam Score")
