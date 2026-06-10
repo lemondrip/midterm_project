@@ -96,10 +96,6 @@ elif page == "Data Viz":
         ax.legend(title="Outcome")
         st.pyplot(fig)          # <- was plt.show()
 
-    
-    )
-    ax.set_title("Correlation Between Numeric Variables")
-    st.pyplot(fig)
 
     # Section 1: Overall performance
     # -----------------------------
@@ -157,7 +153,10 @@ elif page == "Data Viz":
         fmt=".2f",        
         cmap="coolwarm",  
         ax=ax
-
+    )
+    ax.set_title("Correlation Between Numeric Variables")
+    st.pyplot(fig)
+    
     # -----------------------------
     # 2. Behavioral factors vs exam score
     # -----------------------------
