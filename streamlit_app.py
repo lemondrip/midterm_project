@@ -146,6 +146,8 @@ elif page == "Data Viz":
     ax.set_title("Distribution of Exam Scores")
     st.pyplot(fig)              # <- was plt.show()
 
+    st.write("")
+    
     fig, ax = plt.subplots(figsize=(9, 7))
     sns.heatmap(
         df.corr(numeric_only=True),
@@ -156,15 +158,24 @@ elif page == "Data Viz":
     )
     ax.set_title("Correlation Between Numeric Variables")
     st.pyplot(fig)
+
+    st.write("")
     
     # -----------------------------
     # 2. Behavioral factors vs exam score
     # -----------------------------
+    st.header("2. Behavioral factors vs Exam score")
+
+    st.markdown(
+        """
+        Analysis between different student behaviors and the exam score.
+        """
     scatter_chart(df, "study_hours",    "Study Hours",    "Study Hours vs Exam Score")
     scatter_chart(df, "attendance",     "Attendance (%)", "Attendance vs Exam Score")
     scatter_chart(df, "sleep_hours",    "Sleep Hours",    "Sleep Hours vs Exam Score")
     scatter_chart(df, "internet_usage", "Internet Usage", "Internet Usage vs Exam Score")
 
+    
     # -----------------------------
     # 3. Academic preparation factors
     # -----------------------------
