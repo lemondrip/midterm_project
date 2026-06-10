@@ -107,6 +107,78 @@ elif page == "Data Viz":
     ax.set_title("Correlation Between Numeric Variables")
     st.pyplot(fig)
 
+    # Sidebar
+# -----------------------------
+st.sidebar.title("🎓 Dashboard Controls")
+st.sidebar.write(
+    "Use these filters to explore how different student groups perform."
+)
+
+min_score = float(df["exam_score"].min())
+max_score = float(df["exam_score"].max())
+
+score_range = st.sidebar.slider(
+    "Filter by exam score",
+    min_value=float(np.floor(min_score)),
+    max_value=float(np.ceil(max_score)),
+    value=(float(np.floor(min_score)), float(np.ceil(max_score)))
+)
+
+selected_outcomes = st.sidebar.multiselect(
+    "Filter by outcome",
+    options=sorted(df["pass_fail"].unique()),
+    default=sorted(df["pass_fail"].unique())
+)
+
+filtered_df = df[
+    (df["exam_score"] >= score_range[0]) &
+    (df["exam_score"] <= score_range[1]) &
+    (df["pass_fail"].isin(selected_outcomes))
+]
+
+# -----------------------------
+# Header
+# -----------------------------
+st.title("🎓 Student Exam Success Dashboard")
+
+st.markdown(
+    """
+    This dashboard explores the factors that influence whether students pass or fail an exam.
+    Since passing is determined by scoring **70 or higher**, the goal is not only to show who passed,
+    but to understand which student behaviors are associated with stronger exam performance.
+    """
+)
+
+st.markdown("---")
+
+# -----------------------------
+# Section 1: Overall performance
+# -----------------------------
+st.header("1. Overall Student Performance")
+
+st.markdown(
+    """
+    We begin with a high-level view of the class. These metrics summarize the general academic
+    performance and give context before analyzing individual factors.
+    """
+)
+
+total_students = len(filtered_df)
+avg_score = filtered_df["exam_score"].mean()
+pass_rate = (filtered_df["pass_fail"] == "Passed").mean() * 100
+avg_study = filtered_df["study_hours"].mean()
+avg_attendance = filtered_df["attendance"].mean()
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("Students", f"{total_students:,}")
+col2.metric("Average Exam Score", f"{avg_score:.1f}")
+col3.metric("Pass Rate", f"{pass_rate:.1f}%")
+col4.metric("Average Attendance", f"{avg_attendance:.1f}%")
+
+st.write("")
+
+
 
     # -----------------------------
     # 1. Exam score distribution
