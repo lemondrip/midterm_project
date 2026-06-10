@@ -107,6 +107,32 @@ elif page == "Data Viz":
     ax.set_title("Correlation Between Numeric Variables")
     st.pyplot(fig)
 
+    # Section 1: Overall performance
+    # -----------------------------
+    st.header("1. Overall Student Performance")
+
+    st.markdown(
+        """
+        We begin with a high-level view of the class. These metrics summarize the general academic
+        performance and give context before analyzing individual factors.
+        """
+    )
+
+    total_students = len(filtered_df)
+    avg_score = filtered_df["exam_score"].mean()
+    pass_rate = (filtered_df["pass_fail"] == "Passed").mean() * 100
+    avg_study = filtered_df["study_hours"].mean()
+    avg_attendance = filtered_df["attendance"].mean()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Students", f"{total_students:,}")
+    col2.metric("Average Exam Score", f"{avg_score:.1f}")
+    col3.metric("Pass Rate", f"{pass_rate:.1f}%")
+    col4.metric("Average Attendance", f"{avg_attendance:.1f}%")
+
+    st.write("")
+
 
     # -----------------------------
     # 1. Exam score distribution
