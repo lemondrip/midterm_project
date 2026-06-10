@@ -127,9 +127,9 @@ elif page == "Data Viz":
 
     col5, col6, col7, col8 = st.columns(4)
     
-    col5.metric("Average Sleep Hours", f"{avg_sleep:.1f}%")
-    col6.metric("Average Internet Usage", f"{avg_internet:.1f}%")
-    col7.metric("Average Assignments Completed", f"{avg_assignment:.1f}%")
+    col5.metric("Average Sleep Hours", f"{avg_sleep:.1f} hrs")
+    col6.metric("Average Internet Usage", f"{avg_internet:.1f} hrs")
+    col7.metric("Average Assignments Completed", f"{avg_assignment:.1f}")
     col8.metric("Average Previous Score", f"{avg_prevscore:.1f}%")
     st.write("")
 
