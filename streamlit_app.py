@@ -96,13 +96,7 @@ elif page == "Data Viz":
         ax.legend(title="Outcome")
         st.pyplot(fig)          # <- was plt.show()
 
-    fig, ax = plt.subplots(figsize=(9, 7))
-    sns.heatmap(
-        df.corr(numeric_only=True),
-        annot=True,
-        fmt=".2f",        
-        cmap="coolwarm",  
-        ax=ax
+    
     )
     ax.set_title("Correlation Between Numeric Variables")
     st.pyplot(fig)
@@ -155,6 +149,14 @@ elif page == "Data Viz":
     ax.set_ylabel("Number of Students")
     ax.set_title("Distribution of Exam Scores")
     st.pyplot(fig)              # <- was plt.show()
+
+    fig, ax = plt.subplots(figsize=(9, 7))
+    sns.heatmap(
+        df.corr(numeric_only=True),
+        annot=True,
+        fmt=".2f",        
+        cmap="coolwarm",  
+        ax=ax
 
     # -----------------------------
     # 2. Behavioral factors vs exam score
