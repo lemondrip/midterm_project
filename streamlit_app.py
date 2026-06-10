@@ -128,7 +128,7 @@ elif page == "Data Viz":
     avg_assignment = df["assignments_completed"].mean()
     avg_prevscore = df["previous_score"].mean()
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
 
     col1.metric("Students", f"{total_students:,}")
     col2.metric("Average Exam Score", f"{avg_score:.1f}")
