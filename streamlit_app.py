@@ -118,11 +118,11 @@ elif page == "Data Viz":
         """
     )
 
-    total_students = len(filtered_df)
-    avg_score = filtered_df["exam_score"].mean()
-    pass_rate = (filtered_df["pass_fail"] == "Passed").mean() * 100
-    avg_study = filtered_df["study_hours"].mean()
-    avg_attendance = filtered_df["attendance"].mean()
+    total_students = len(df)
+    avg_score = df["exam_score"].mean()
+    pass_rate = (df["pass_fail"] == "Passed").mean() * 100
+    avg_study = df["study_hours"].mean()
+    avg_attendance = df["attendance"].mean()
 
     col1, col2, col3, col4 = st.columns(4)
 
