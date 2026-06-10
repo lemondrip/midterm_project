@@ -172,6 +172,8 @@ elif page == "Data Viz":
         """
     )    
     scatter_chart(df, "study_hours",    "Study Hours",    "Study Hours vs Exam Score")
+    scatter_chart(df, "assignments_completed", "Assignments Completed",
+                  "Assignments Completed vs Exam Score")
     scatter_chart(df, "attendance",     "Attendance (%)", "Attendance vs Exam Score")
     scatter_chart(df, "sleep_hours",    "Sleep Hours",    "Sleep Hours vs Exam Score")
     scatter_chart(df, "internet_usage", "Internet Usage", "Internet Usage vs Exam Score")
@@ -180,8 +182,7 @@ elif page == "Data Viz":
     # -----------------------------
     # 3. Academic preparation factors
     # -----------------------------
-    scatter_chart(df, "assignments_completed", "Assignments Completed",
-                  "Assignments Completed vs Exam Score")
+    
     scatter_chart(df, "previous_score", "Previous Score",
                   "Previous Score vs Exam Score")
 
