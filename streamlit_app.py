@@ -82,6 +82,10 @@ performance  outside of just their knowledge and mastery on the course content. 
 </div>
 """, unsafe_allow_html=True)
 
+st.image(
+    "Students.png",
+    use_container_width=True
+)
    
 
 elif page == "Introduction":
