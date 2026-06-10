@@ -45,7 +45,7 @@ if page == "Landing":
 }
 .hero-problem {
     font-size: 1.1rem;
-    color: #CBD5E1;
+    color: #333333;
     line-height: 1.8;
     max-width: 700px;
 }
